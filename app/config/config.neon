@@ -1,0 +1,23 @@
+parameters:
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+session:
+	expiration: 14 days
+	
+database:
+	dsn: '%database.driver%:host=%database.host%;dbname=%database.dbname%'
+	user: %database.user%
+	password: %database.password%
+	options:
+		lazy: yes
+	debugger: true        # zobrazí panel v Tracy baru
+	explain:  true        # explain dotazů v Tracy bar
+
+services:
+	router: App\RouterFactory::createRouter
+	messager: App\Model\Messages\Messager
+	sqlPatcher: App\Model\Database\Patches\SqlPatcher(@Nette\Database\Context, %appDir%/../sql/, @messager)

@@ -1,0 +1,48 @@
+{block content}
+	<style>
+		.bd-callout {
+		  padding: 1.25rem;
+		  margin-top: 1.25rem;
+		  margin-bottom: 1.25rem;
+		  border: 1px solid #eee;
+		  border-left-width: .25rem;
+		  border-radius: .25rem;
+		  border-left-color: #5bc0de;
+		}
+
+		.bd-callout h4 {
+		  margin-top: 0;
+		  margin-bottom: .25rem;
+		  color: #5bc0de;
+		}
+
+		.bd-callout p:last-child {
+		  margin-bottom: 0;
+		}
+
+		.bd-callout code {
+		  border-radius: .25rem;
+		}
+
+		.bd-callout + .bd-callout {
+		  margin-top: -.25rem;
+		}
+	</style>
+	
+	<div class="container">
+		{foreach $messages as $messageGroup}
+			<div class="bd-callout bd-callout-info">
+				{foreach $messageGroup as $message}
+					{if $iterator->first}
+						<h4>{vsprintf($message->message, $message->data)|noescape}</h4>
+					{else}
+						<div {if $message->isError()}class="alert alert-danger"{/if}>
+							{vsprintf($message->message, \Nette\Database\Helpers::dumpSql($message->data))|noescape}
+						</div>
+					{/if}
+				{/foreach}
+			</div>
+		{/foreach}
+		<a href="{link SqlPatcher:default}" class="btn btn-primary">Zpět na seznam aktualizací</a>
+	</div>
+{/block}

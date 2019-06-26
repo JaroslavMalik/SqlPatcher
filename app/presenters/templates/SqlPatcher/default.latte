@@ -1,0 +1,212 @@
+{block title}Sql aktualizace{/block}
+
+{define modal}
+	<div class="modal fade bd-example-modal-lg" id="{$id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLongTitle">{$title}</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Zavřít">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			{$content|noescape}
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Zavřít</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+{/define}
+
+{block content}
+<style>
+	.detail pre {
+		white-space: pre-wrap;       /* css-3 */
+		white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+		white-space: -pre-wrap;      /* Opera 4-6 */
+		white-space: -o-pre-wrap;    /* Opera 7 */
+		word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	}
+</style>
+
+<div class="container-fluid">
+	<h1>{include title}</h1>
+	<div class="row">
+		{if count($deployedPatches) > 0}
+			<div class="col my-3">
+				<div class="d-flex justify-content-between mb-2">
+					<h2 class="h4">Nahrané</h2>
+				</div>
+				<div class="table-responsive-md card">
+					<table class="table table-sm table-hover table-striped mb-0">
+						{*<caption>Nahrané</caption>*}
+						<thead class="thead-light">
+							<tr>
+								<th scope="col"></th>
+								<th scope="col">Název</th>
+								<th scope="col">Datum</th>
+								<th scope="col">Stav</th>
+							</tr>
+						</thead>
+						<tbody>
+							{foreach $deployedPatches as $patch}
+								<tr>
+									<td class="detail-toggle align-middle"><img src="/svg/chevron-right.svg" alt="expand"></td>
+									<td class="detail-toggle align-middle text-truncate">{$patch->fileName}</td>
+									<td class="detail-toggle align-middle">{$patch->processed|date:'d.m.y'}</td>
+									<td>
+										<div class="btn-group">
+											<button type="button" class="btn btn-sm {if $patch->isDeleted()}btn-danger{elseif $patch->isModified()}btn-warning{else}btn-success{/if}">
+												{if $patch->isDeleted()}CHYBÍ ZDROJ{elseif $patch->isModified()}ZMĚNĚNO{else}NAHRANÉ{/if}
+											</button>
+											<button type="button" class="btn btn-sm {if $patch->isDeleted()}btn-danger{elseif $patch->isModified()}btn-warning{else}btn-success{/if} dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												<span class="sr-only">Zobrazit akce</span>
+											</button>
+											<div class="dropdown-menu">
+												<a class="dropdown-item" data-toggle="modal" data-target="#main-modal" data-caption="{$patch->fileName}" data-row-id="deployed_row_{$iterator->counter}" href="#">Detail</a>
+												<a class="dropdown-item" href={link downgrade $patch->fileName}>Vrátit aktualizaci</a>
+												{if $patch->isModified()}<a class="dropdown-item" href={link logAsUpgraded $patch->fileName}>Označit jako upravené</a>{/if}
+												<a class="dropdown-item" href={link logAsDowngraded $patch->fileName}>Označit jako nové</a>												
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr class="detail collapse bg-white" id="deployed_row_{$iterator->counter}">
+									<td colspan="4">
+										<div class="row">
+											<div class="col">
+												<h5>Upgrade</h5>
+												<div class="sql-dump">{\Nette\Database\Helpers::dumpSql($patch->upgrade)|noescape}</div>
+											</div>
+											{if $patch->isModified()}
+												<div class="col">
+													<h5>Upravený upgrade</h5>
+													<div class="sql-dump">{\Nette\Database\Helpers::dumpSql($patch->getPatchFile()->upgrade)|noescape}</div>
+												</div>
+											{/if}
+											<div class="w-100"></div>
+											<div class="col">
+												<h5>Downgrade</h5>
+												<div class="sql-dump">{\Nette\Database\Helpers::dumpSql($patch->downgrade)|noescape}</div>
+											</div>
+											{if $patch->isModified()}
+												<div class="col">
+													<h5>Upravený downgrade</h5>
+													<div class="sql-dump">{\Nette\Database\Helpers::dumpSql($patch->getPatchFile()->downgrade)|noescape}</div>
+												</div>
+											{/if}
+										</div>
+									</td>
+								</tr>
+							{/foreach}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		{/if}				
+		
+		{if count($newPatches) > 0}	
+			<div class="col my-3">
+				<div class="d-flex justify-content-between mb-2">
+					<h2 class="h4">Nové</h2>
+					<a class="btn btn-outline-info ajax" href={link SqlPatcher:upgrade 'all'}>NAHRÁT VŠE</a>
+				</div>
+				<div class="table-responsive-sm card">
+					<table class="table table-sm table-hover table-striped mb-0">
+						{*<caption>Nové</caption>*}
+						<thead class="thead-light">
+							<tr>
+								<th scope="col"></th>
+								<th scope="col">Název</th>
+								<th scope="col">Datum</th>
+								<th scope="col">Stav</th>
+							</tr>
+						</thead>
+						<tbody>
+							{foreach $newPatches as $patch}
+								<tr>
+									<td class="detail-toggle align-middle"><img src="/svg/chevron-right.svg" alt="expand"></td>
+									<td class="detail-toggle align-middle text-truncate">{$patch->fileName}</td>
+									<td class="detail-toggle align-middle">{$patch->fileLastUpdate|date:'d.m.y'}</td>
+									<td class="align-middle">
+										<div class="btn-group">
+											<button type="button" class="btn btn-sm btn-info">
+												NOVÉ
+											</button>
+											<button type="button" class="btn btn-sm btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												<span class="sr-only">Zobrazit akce</span>
+											</button>
+											<div class="dropdown-menu">
+												<a class="dropdown-item" data-toggle="modal" data-target="#main-modal" data-caption="{$patch->fileName}" data-row-id="new_row_{$iterator->counter}" href="#">Detail</a>
+												<a class="dropdown-item" href={link upgrade $patch->fileName}>Nahrát</a>
+												<a class="dropdown-item" href={link logAsUpgraded $patch->fileName}>Označit jako nahrané</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr class="detail collapse bg-white" id="new_row_{$iterator->counter}">
+									<td colspan="4 ">
+										<div class="row">
+											<div class="col">
+												<h5>Upgrade</h5>
+												<div class="sql-dump">{\Nette\Database\Helpers::dumpSql($patch->upgrade)|noescape}</div>
+											</div>
+											<div class="w-100"></div>
+											<div class="col">
+												<h5>Downgrade</h5>
+												<div class="sql-dump">{\Nette\Database\Helpers::dumpSql($patch->downgrade)|noescape}</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+							{/foreach}
+						</tbody>
+					</table>
+				</div>
+			</div>	
+		{/if}	
+				
+	</div>
+											
+</div>
+		
+{include modal, id => 'main-modal', title => '', content => ''}
+
+{ifset $messages}
+	<div class="modal fade bd-example-modal-lg" id="messages-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	  <div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-body">
+			{include info.latte}
+		  </div>
+		</div>
+	  </div>
+	</div>
+{/ifset}
+
+{/block}
+
+{block scripts}
+{include parent}
+<script>
+	$( document ).ready(function() {
+		$('.detail').collapse({
+			toggle: false
+		});
+		$('.detail').collapse('hide');
+		$('.detail-toggle').click(function() {
+			$(this).closest('tr').next().collapse('toggle');
+		});	
+		$('#main-modal').on('show.bs.modal', function (e) {
+			$(this).find('.modal-title').text(e.relatedTarget.getAttribute('data-caption'));
+			$(this).find('.modal-body').html($('#'+e.relatedTarget.getAttribute('data-row-id')).find('td').html());
+		});
+		{ifset $messages}
+			$('#messages-modal').modal();
+		{/ifset}
+	});
+</script>
+{/block}
