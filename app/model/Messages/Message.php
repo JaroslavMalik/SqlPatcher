@@ -7,12 +7,12 @@ namespace App\Model\Messages;
  * 
  * @property string $message
  * @property string $key
- * @property int $type
+ * @property int $type 
  * @property array $data
  */
 class Message
 {	
-    use \Nette\SmartObject;
+	use \Nette\SmartObject;
 	
 	// typy zprav
 	const BASIC = 1;

@@ -10,13 +10,13 @@ namespace App\Model\Messages;
 class Result extends Messages
 {	
 	
-    use \Nette\SmartObject;
+	use \Nette\SmartObject;
 	
 	/** @var boolean */
 	protected $result;	
 		
 	/**
-	 * __construct(\App\Model\Messages\Messager $messager, $result)
+	 * __construct(\App\Model\Messages\Messager $messager, $result) 
 	 * 
 	 * @param \App\Model\Messages\Messager $messager
 	 * @param boolean $result

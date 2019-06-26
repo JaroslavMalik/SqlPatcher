@@ -8,20 +8,20 @@ use Nette;
 class SqlPatcherPresenter extends Nette\Application\UI\Presenter
 {
 	/** @var \App\Model\SqlPatcher */
-    protected $sqlPatcher;
+	protected $sqlPatcher;
 	
 	public function __construct(\App\Model\Database\Patches\SqlPatcher $sqlPatcher)
-    {
-        $this->sqlPatcher = $sqlPatcher;
-    }
+	{
+		$this->sqlPatcher = $sqlPatcher;
+	}
 	
-	public function renderDefault() 
+	public function renderDefault()
 	{
 		$this->template->deployedPatches = $this->sqlPatcher->getDeployedPatches();
 		$this->template->newPatches = $this->sqlPatcher->getNewPatches();
 	}
 	
-	public function actionUpgrade($id = 'all') 
+	public function actionUpgrade($id = 'all')
 	{
 		if ($id == 'all') {
 			$this->sqlPatcher->upgradeAll();

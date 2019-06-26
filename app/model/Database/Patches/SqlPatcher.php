@@ -11,17 +11,17 @@ use Nette;
  */
 class SqlPatcher
 {
-    use \Nette\SmartObject;
+	use \Nette\SmartObject;
 	
-    /**
-     * @var \Nette\Database\Context
-     */
-    protected $database;
+	/**
+	 * @var \Nette\Database\Context
+	 */
+	protected $database;
 	
-    /**
-     * @var string
-     */
-    protected $basePath;
+	/**
+	 * @var string
+	 */
+	protected $basePath;
 	
 	/**
 	 * @var \App\Model\Database\Patches\Patch[string] associative array by fileName and ordered by processed 
@@ -47,14 +47,14 @@ class SqlPatcher
 	 * @param string $basePath
 	 * @param \App\Model\Messages\Messager $messager
 	 */
-    public function __construct(\Nette\Database\Context $database, $basePath, \App\Model\Messages\Messager $messager)
-    {
-        $this->database = $database;
-        $this->basePath = $basePath;
-        $this->deployedPatches = array();
-        $this->availablePatches = array();
-        $this->messages = $messager->newMessages();
-    }
+	public function __construct(\Nette\Database\Context $database, $basePath, \App\Model\Messages\Messager $messager)
+	{
+		$this->database = $database;
+		$this->basePath = $basePath;
+		$this->deployedPatches = array();
+		$this->availablePatches = array();
+		$this->messages = $messager->newMessages();
+	}
 	
 	/**
 	 * getDeployedPatches()
@@ -145,7 +145,7 @@ class SqlPatcher
 	 * @return boolean success?
 	 */
 	public function upgradeAll()
-    {
+	{
 		$newPatches = $this->getNewPatches();
 		foreach ($newPatches as $file) {
 			if (!$this->upgrade($file->fileName)) {
@@ -165,7 +165,7 @@ class SqlPatcher
 		$this->messages->addPrimaryMessage("SQL_PATCHER__START_UPGRADE", "UPGRADE %s", $fileName);
 		
 		if (isset($this->availablePatches[$fileName])) {
-			$patchFile = $this->availablePatches[$fileName];
+			$patchFile = $this->availablePatches[$fileName]; 
 		} else {
 			$patchFile = new PatchFile($this->basePath, $fileName);
 		}
@@ -192,7 +192,7 @@ class SqlPatcher
 		$this->messages->addSuccessMessage("SQL_PATCHER__PATCH_EXECUTED", "Patch byl úspěšně nasazen.");
 //		$this->database->query("INSERT INTO patches (fileName,processed) VALUES (".$this->database->getConnection()->quote($file).",UNIX_TIMESTAMP());");
 		return true;
-    }
+	}
 	
 	/**
 	 * logAsUpgraded($fileName)

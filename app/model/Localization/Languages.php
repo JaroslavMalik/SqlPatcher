@@ -8,10 +8,10 @@ use Nette;
  */
 class Languages extends \App\Model\Database\Table\Selection
 {
-    use \Nette\SmartObject;
+	use \Nette\SmartObject;
 	
 	/**
-	 * @var \App\Model\Localization\Language[int] cache: associative array by id 
+	 * @var \App\Model\Localization\Language[int] cache: associative array by id
 	 */
 	protected $visibleLanguages;
 	
@@ -33,13 +33,13 @@ class Languages extends \App\Model\Database\Table\Selection
 	 * @param \Nette\Database\Context $database
 	 * @param string $basePath
 	 */
-    public function __construct(\Nette\Database\Context $database)
-    {
+	public function __construct(\Nette\Database\Context $database)
+	{
 		parent::__construct($database->table(Language::TABLE_NAME));
 		$this->visibleLanguages = array();
 		$this->languages = array();
 		$this->languagesByCode = array();
-    }
+	}
 	
 	/**
 	 * getLanguage($id = Language::DEFAULT_LANGUAGE_ID)
@@ -50,7 +50,7 @@ class Languages extends \App\Model\Database\Table\Selection
 	 */
 	public function getLanguage($id = Language::DEFAULT_LANGUAGE_ID)
 	{
-        $this->getAllLanguages();
+		$this->getAllLanguages();
 		if (!isset($this->languages[$id])) {
 			throw new \Nette\InvalidArgumentException("Language with id = $id doesn't exist.");
 		}
@@ -66,7 +66,7 @@ class Languages extends \App\Model\Database\Table\Selection
 	 */
 	public function getLanguageByCode($code)
 	{
-        $this->getAllLanguages();
+		$this->getAllLanguages();
 		if (!isset($this->languagesByCode[$code])) {
 			throw new \Nette\InvalidArgumentException("Language with code = $code doesn't exist.");
 		}
@@ -80,7 +80,7 @@ class Languages extends \App\Model\Database\Table\Selection
 	 * @return \App\Model\Localization\Language[int]
 	 */
 	public function getAllLanguages($forceReloadFromDb = false)
-    {
+	{
 		if (empty($this->languages) || $forceReloadFromDb) {
 			$this->visibleLanguages = array();
 			$this->languages = array();
@@ -103,7 +103,7 @@ class Languages extends \App\Model\Database\Table\Selection
 		}
 		
 		return $this->languages;
-    }
+	}
 	
 	/**
 	 * getLanguages($includingHiddenLanguages = false, $includingDefaultLanguage = false)
@@ -114,7 +114,7 @@ class Languages extends \App\Model\Database\Table\Selection
 	 */
 	public function getLanguages($includingHiddenLanguages = false, $includingDefaultLanguage = false)
 	{
-        $this->getAllLanguages();
+		$this->getAllLanguages();
 		$languages = $this->visibleLanguages;
 		if ($includingHiddenLanguages) {
 			$languages = $this->languages;

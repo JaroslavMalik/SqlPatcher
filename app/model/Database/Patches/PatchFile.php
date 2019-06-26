@@ -17,17 +17,17 @@ use Nette;
  */
 class PatchFile
 {
-    use \Nette\SmartObject;
+	use \Nette\SmartObject;
 	
-    /**
-     * @var string
-     */
-    protected $fileName;
+	/**
+	 * @var string
+	 */
+	protected $fileName;
 	
-    /**
-     * @var string
-     */
-    protected $filePath;
+	/**
+	 * @var string
+	 */
+	protected $filePath;
 
 	/**
 	 * __construct($basePath, $fileName)
@@ -35,11 +35,11 @@ class PatchFile
 	 * @param string $basePath
 	 * @param string $fileName
 	 */
-    public function __construct($basePath, $fileName)
-    {
-        $this->fileName = $fileName;
-        $this->filePath = $basePath . $fileName;
-    }
+	public function __construct($basePath, $fileName)
+	{
+		$this->fileName = $fileName;
+		$this->filePath = $basePath . $fileName;
+	}
 	
 	/**
 	 * __toString()
@@ -118,7 +118,7 @@ class PatchFile
 		if (strpos($content, '/* DOWNGRADE')) {
 			$parts = explode('/* DOWNGRADE', $content);
 			$upgrade = $parts[0];
-			//$downgrade = str_replace("-- */", "", $parts[1]);
+			//$downgrade = str_replace("-- */", "", $parts[1]); 
 		}
 		return $upgrade;
 	}

@@ -16,7 +16,7 @@ class ActiveRow extends Nette\Database\Table\ActiveRow
 	 * @param array|\Nette\Database\Table\ActiveRow $dataOrActiveRow
 	 * @param \App\Model\Database\Patches\Selection $table
 	 */
-	public function __construct($dataOrActiveRow, Selection $table = null)
+	public function __construct($dataOrActiveRow, Selection $table = null) 
 	{
 		if ($dataOrActiveRow instanceof \Nette\Database\Table\ActiveRow) {
 			$data = $dataOrActiveRow->toArray();
@@ -73,8 +73,8 @@ class ActiveRow extends Nette\Database\Table\ActiveRow
 	 * @return mixed
 	 * @throws \BadMethodCallException
 	 */
-    public function __call($name, $arguments)
-    {
+	public function __call($name, $arguments)
+	{
 		if (strpos($name, "get") === 0) {
 			return $this->__get(lcfirst(substr($name, 3)));
 		}
@@ -82,6 +82,6 @@ class ActiveRow extends Nette\Database\Table\ActiveRow
 			return (($this->__get(lcfirst(substr($name, 2)))) ? true : false);
 		}
 		throw new \BadMethodCallException();
-    }
+	}
 }
 

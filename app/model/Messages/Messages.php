@@ -9,7 +9,7 @@ namespace App\Model\Messages;
  */
 class Messages
 {	
-    use \Nette\SmartObject;
+	use \Nette\SmartObject;
 	
 	/**
 	 * @var \App\Model\Messages\Messager 
@@ -27,9 +27,9 @@ class Messages
 	 * @param \App\Model\Messages\Messager $messager
 	 */
 	public function __construct(\App\Model\Messages\Messager $messager)
-    {
+	{
 		$this->messager = $messager;
-        $this->messages = array();
+		$this->messages = array();
 	}
 	
 	/**

@@ -10,12 +10,12 @@ use Nette;
  */
 class Selection // extends Nette\Database\Table\Selection
 {
-    use \Nette\SmartObject;
+	use \Nette\SmartObject;
 	
 	/**
 	 * @var \Nette\Database\Table\Selection 
 	 */
-	protected $table;
+	protected $table; 
 	
 	/**
 	 * __construct(Selection $table )
